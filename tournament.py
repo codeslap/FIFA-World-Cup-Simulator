@@ -14,24 +14,22 @@ def main():
     if len(sys.argv) != 2:
         sys.exit("Usage: python tournament.py FILENAME")
 
+    # open csv file and add each team name and rating into list of dictionaries
     teams = []
     with open(sys.argv[1]) as file:
         reader = csv.DictReader(file)
         for row in reader:
             teams.append(row)
 
+    # convert ratings into integer for probability use later
     lent = len(teams)
     for i in range(0, lent):
         for k,v in teams[i].items():
             if v.isnumeric():
                 v = int(v)
                 teams[i][k] = v
-                
-    teamnames = []
-    for i in range(0, lent):
-        for k,v in teams[i].items():
-            if isinstance(v, str):
-                teamnames.append(v)
+
+    # Simulate N tournaments and keep track of win counts
     counts = {}
     for i in range (0, N):
        counter = [simulate_tournament(teams)]
@@ -40,8 +38,6 @@ def main():
        else:
             counts[tuple(counter)] = 1
 
-
-    # TODO: Simulate N tournaments and keep track of win counts
 
     # Print each team's chances of winning, according to simulation
     for team in sorted(counts, key=lambda team: counts[team], reverse=True):
@@ -72,13 +68,11 @@ def simulate_round(teams):
 
 def simulate_tournament(teams):
     """Simulate a tournament. Return name of winning team."""
-    # TODO
+    # Keep simulating tournament and updating list of teams until one team wins.
     while len(teams) >= 2:
         teams = simulate_round(teams)
     if len(teams) == 1:
         return teams[0]['team']
-
-
 
 if __name__ == "__main__":
     main()
